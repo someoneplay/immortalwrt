@@ -9,19 +9,20 @@
 
 	gpio-leds {
 		led-lan1 {
-			label = "green:lan";
+			/delete-property/ function-enumerator;
 		};
 
 		led-lan2 {
-			label = "green:user";
+			/delete-property/ function-enumerator;
+			function = LED_FUNCTION_PROGRAMMING;
 		};
 	};
 };
 
-&pcie2x1l1 {
+&pcie2x1l2 {
 	/delete-node/ pcie@0,0;
 };
 
-&pcie2x1l2 {
-	/delete-node/ pcie@0,0;
+&rtl8125_1 {
+	/delete-property/ label;
 };

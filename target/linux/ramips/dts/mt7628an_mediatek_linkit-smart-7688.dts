@@ -107,7 +107,7 @@
 				reg = <0x30000 0x10000>;
 			};
 
-			factory: partition@40000 {
+			partition@40000 {
 				label = "factory";
 				reg = <0x40000 0x10000>;
 				read-only;
@@ -167,7 +167,7 @@
 
 &sdhci {
 	status = "okay";
-	mediatek,cd-high;
+	cd-inverted;
 };
 
 &wmac {

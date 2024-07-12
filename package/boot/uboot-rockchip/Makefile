@@ -5,9 +5,9 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
-PKG_VERSION:=2024.01
+PKG_VERSION:=2024.07
 PKG_RELEASE:=1
-PKG_HASH:=b99611f1ed237bf3541bdc8434b68c96a6e05967061f992443cb30aabebef5b3
+PKG_HASH:=f591da9ab90ef3d6b3d173766d0ddff90c4ed7330680897486117df390d83c8f
 
 PKG_MAINTAINER:=Tobias Maedel <openwrt@tbspace.de>
 
@@ -142,13 +142,37 @@ define U-Boot/rockpro64-rk3399
 endef
 
 
+# RK3566 boards
+
+define U-Boot/Default/rk3566
+  BUILD_SUBTARGET:=armv8
+  DEPENDS:=+PACKAGE_u-boot-$(1):trusted-firmware-a-rk3566
+  ATF:=$(RK3566_ATF)
+  TPL:=$(RK3566_TPL)
+endef
+
+define U-Boot/radxa-cm3-io-rk3566
+  $(U-Boot/Default/rk3566)
+  NAME:=CM3 IO
+  BUILD_DEVICES:= \
+    radxa_cm3-io
+endef
+
+
 # RK3568 boards
 
 define U-Boot/Default/rk3568
   BUILD_SUBTARGET:=armv8
   DEPENDS:=+PACKAGE_u-boot-$(1):trusted-firmware-a-rk3568
   ATF:=$(RK3568_ATF)
-  DDR:=$(RK3568_DDR)
+  TPL:=$(RK3568_TPL)
+endef
+
+define U-Boot/bpi-r2-pro-rk3568
+  $(U-Boot/Default/rk3568)
+  NAME:=Bananapi-R2 Pro
+  BUILD_DEVICES:= \
+    sinovoip_bpi-r2-pro
 endef
 
 define U-Boot/fastrhino-r66s-rk3568
@@ -186,11 +210,34 @@ define U-Boot/nanopi-r5s-rk3568
     friendlyarm_nanopi-r5s
 endef
 
+define U-Boot/photonicat-rk3568
+  $(U-Boot/Default/rk3568)
+  NAME:=Photonicat
+  BUILD_DEVICES:= \
+    ariaboard_photonicat
+endef
+
+define U-Boot/radxa-e25-rk3568
+  $(U-Boot/Default/rk3568)
+  DEPENDS:=+PACKAGE_u-boot-$(1):trusted-firmware-a-rk3568-e25
+  TPL:=$(RK3568_TPL_E25)
+  NAME:=E25
+  BUILD_DEVICES:= \
+    radxa_e25
+endef
+
 define U-Boot/roc-pc-rk3568
   $(U-Boot/Default/rk3568)
   NAME:=Station P2
   BUILD_DEVICES:= \
     firefly_roc-rk3568-pc
+endef
+
+define U-Boot/rock-3a-rk3568
+  $(U-Boot/Default/rk3568)
+  NAME:=Rock 3A
+  BUILD_DEVICES:= \
+    radxa_rock-3a
 endef
 
 
@@ -200,7 +247,7 @@ define U-Boot/Default/rk3588
   BUILD_SUBTARGET:=armv8
   DEPENDS:=+PACKAGE_u-boot-$(1):trusted-firmware-a-rk3588
   ATF:=$(RK3588_ATF)
-  DDR:=$(RK3588_DDR)
+  TPL:=$(RK3588_TPL)
 endef
 
 define U-Boot/nanopc-t6-rk3588
@@ -222,6 +269,13 @@ define U-Boot/rock5b-rk3588
   NAME:=Rock 5B
   BUILD_DEVICES:= \
     radxa_rock-5b
+endef
+
+define U-Boot/sige7-rk3588
+  $(U-Boot/Default/rk3588)
+  NAME:=Sige7
+  BUILD_DEVICES:= \
+    armsom_sige7
 endef
 
 
@@ -270,15 +324,21 @@ UBOOT_TARGETS := \
   roc-cc-rk3328 \
   rock-pi-e-rk3328 \
   rock64-rk3328 \
+  radxa-cm3-io-rk3566 \
+  bpi-r2-pro-rk3568 \
   fastrhino-r66s-rk3568 \
   fastrhino-r68s-rk3568 \
   mrkaio-m68s-rk3568 \
   nanopi-r5c-rk3568 \
   nanopi-r5s-rk3568 \
+  photonicat-rk3568 \
+  radxa-e25-rk3568 \
   roc-pc-rk3568 \
+  rock-3a-rk3568 \
   nanopc-t6-rk3588 \
   orangepi-5-plus-rk3588 \
   rock5b-rk3588 \
+  sige7-rk3588 \
   nanopi-r6c-rk3588s \
   nanopi-r6s-rk3588s \
   orangepi-5-rk3588s \
@@ -287,20 +347,27 @@ UBOOT_TARGETS := \
 UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 
 UBOOT_CUSTOMIZE_CONFIG := \
-	--disable SPL_FIT_SIGNATURE \
 	--disable TOOLS_MKEFICAPSULE \
-	--set-str MKIMAGE_DTC_PATH $(PKG_BUILD_DIR)/scripts/dtc/dtc
+	--set-str MKIMAGE_DTC_PATH $(PKG_BUILD_DIR)/scripts/dtc/dtc \
+	$(if $(TPL),, \
+		--disable CMD_DFU \
+		--disable CMD_EFIDEBUG \
+		--disable CMD_NVEDIT_EFI \
+		--disable DFU_MMC \
+		--disable EFI_CAPSULE_ON_DISK \
+		--disable EFI_CAPSULE_FIRMWARE_RAW \
+		--disable SPL_FIT_SIGNATURE \
+		--disable USB_FUNCTION_FASTBOOT \
+	)
 
 UBOOT_MAKE_FLAGS += \
-  PATH=$(STAGING_DIR_HOST)/bin:$(PATH) \
   BL31=$(STAGING_DIR_IMAGE)/$(ATF) \
-  $(if $(DDR),ROCKCHIP_TPL=$(STAGING_DIR_IMAGE)/$(DDR))
+  $(if $(TPL),ROCKCHIP_TPL=$(STAGING_DIR_IMAGE)/$(TPL))
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
-ifneq ($(DDR),)
-	$(CP) $(PKG_BUILD_DIR)/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
-	$(CP) $(PKG_BUILD_DIR)/u-boot.itb $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.itb
+ifneq ($(TPL),)
+	$(CP) $(PKG_BUILD_DIR)/u-boot-rockchip.bin $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot-rockchip.bin
 else
 	$(STAGING_DIR_IMAGE)/loaderimage --pack --uboot $(PKG_BUILD_DIR)/u-boot-dtb.bin $(PKG_BUILD_DIR)/uboot.img 0x200000
 	$(CP) $(PKG_BUILD_DIR)/uboot.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-uboot.img

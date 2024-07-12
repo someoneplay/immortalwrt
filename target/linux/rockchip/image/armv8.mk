@@ -10,6 +10,29 @@ define Device/IfnameMigration
   DEVICE_COMPAT_MESSAGE := Network interface names have been changed
 endef
 
+define Device/ariaboard_photonicat
+  DEVICE_VENDOR := Ariaboard
+  DEVICE_MODEL := Photonicat
+  SOC := rk3568
+  BOOT_FLOW := pine64-img
+  DEVICE_PACKAGES := kmod-ath10k-sdio ath10k-firmware-qca9377-sdio wpad-openssl \
+	kmod-usb-net-cdc-mbim kmod-usb-net-qmi-wwan kmod-usb-serial-option uqmi
+endef
+TARGET_DEVICES += ariaboard_photonicat
+
+define Device/armsom_sige7
+  DEVICE_VENDOR := ArmSoM
+  DEVICE_MODEL := Sige7
+  DEVICE_ALT0_VENDOR := Bananapi
+  DEVICE_ALT0_MODEL := BPi-M7
+  SOC := rk3588
+  DEVICE_DTS := rockchip/rk3588-armsom-sige7
+  BOOT_FLOW := pine64-img
+  DEVICE_PACKAGES := kmod-brcmfmac kmod-r8125 wpad-openssl \
+	brcmfmac-firmware-43752-pcie brcmfmac-nvram-43752-pcie
+endef
+TARGET_DEVICES += armsom_sige7
+
 define Device/ezpro_mrkaio-m68s
   DEVICE_VENDOR := EZPRO
   DEVICE_MODEL := Mrkaio M68S
@@ -39,7 +62,7 @@ define Device/firefly_roc-rk3568-pc
   SUPPORTED_DEVICES := firefly,rk3568-roc-pc
   UBOOT_DEVICE_NAME := roc-pc-rk3568
   BOOT_FLOW := pine64-img
-  DEVICE_PACKAGES := kmod-ata-ahci-platform kmod-brcmfmac wpad-basic-openssl \
+  DEVICE_PACKAGES := kmod-ata-ahci-platform kmod-brcmfmac wpad-openssl \
 	brcmfmac-firmware-43752-sdio brcmfmac-nvram-43752-sdio
 endef
 TARGET_DEVICES += firefly_roc-rk3568-pc
@@ -49,7 +72,7 @@ define Device/friendlyarm_nanopc-t4
   DEVICE_MODEL := NanoPC T4
   SOC := rk3399
   BOOT_FLOW := pine64-bin
-  DEVICE_PACKAGES := kmod-brcmfmac wpad-basic-openssl \
+  DEVICE_PACKAGES := kmod-brcmfmac wpad-openssl \
 	brcmfmac-firmware-4356-sdio brcmfmac-nvram-4356-sdio
 endef
 TARGET_DEVICES += friendlyarm_nanopc-t4
@@ -123,7 +146,7 @@ define Device/friendlyarm_nanopi-r5c
   DEVICE_MODEL := NanoPi R5C
   SOC := rk3568
   BOOT_FLOW := pine64-img
-  DEVICE_PACKAGES := kmod-r8125 kmod-rtw88-8822ce rtl8822ce-firmware wpad-basic-openssl
+  DEVICE_PACKAGES := kmod-r8125 kmod-rtw88-8822ce rtl8822ce-firmware wpad-openssl
 endef
 TARGET_DEVICES += friendlyarm_nanopi-r5c
 
@@ -198,6 +221,37 @@ define Device/pine64_rockpro64
 endef
 TARGET_DEVICES += pine64_rockpro64
 
+define Device/radxa_cm3-io
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := CM3 IO
+  SOC := rk3566
+  DEVICE_DTS := rockchip/rk3566-radxa-cm3-io
+  UBOOT_DEVICE_NAME := radxa-cm3-io-rk3566
+  BOOT_FLOW := pine64-img
+endef
+TARGET_DEVICES += radxa_cm3-io
+
+define Device/radxa_e25
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := E25
+  SOC := rk3568
+  DEVICE_DTS := rockchip/rk3568-radxa-e25
+  UBOOT_DEVICE_NAME := radxa-e25-rk3568
+  BOOT_FLOW := pine64-img
+  BOOT_SCRIPT := radxa-e25
+  DEVICE_PACKAGES := kmod-r8125 kmod-ata-ahci-platform
+endef
+TARGET_DEVICES += radxa_e25
+
+define Device/radxa_rock-3a
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 3A
+  SOC := rk3568
+  SUPPORTED_DEVICES := radxa,rock3a
+  BOOT_FLOW := pine64-img
+endef
+TARGET_DEVICES += radxa_rock-3a
+
 define Device/radxa_rock-5a
   DEVICE_VENDOR := Radxa
   DEVICE_MODEL := ROCK 5A
@@ -225,7 +279,7 @@ define Device/radxa_rock-pi-4a
   SUPPORTED_DEVICES := radxa,rockpi4a radxa,rockpi4
   UBOOT_DEVICE_NAME := rock-pi-4-rk3399
   BOOT_FLOW := pine64-bin
-  DEVICE_PACKAGES := kmod-brcmfmac wpad-basic-openssl \
+  DEVICE_PACKAGES := kmod-brcmfmac wpad-openssl \
 	brcmfmac-firmware-43456-sdio brcmfmac-nvram-43456-sdio
 endef
 TARGET_DEVICES += radxa_rock-pi-4a
@@ -238,6 +292,16 @@ define Device/radxa_rock-pi-e
   BOOT_FLOW := pine64-bin
 endef
 TARGET_DEVICES += radxa_rock-pi-e
+
+define Device/sinovoip_bpi-r2-pro
+  DEVICE_VENDOR := Bananapi
+  DEVICE_MODEL := BPi-R2 Pro
+  SOC := rk3568
+  SUPPORTED_DEVICES := sinovoip,rk3568-bpi-r2pro
+  BOOT_FLOW := pine64-img
+  DEVICE_PACKAGES := kmod-ata-ahci-dwc
+endef
+TARGET_DEVICES += sinovoip_bpi-r2-pro
 
 define Device/xunlong_orangepi-5
   DEVICE_VENDOR := Xunlong

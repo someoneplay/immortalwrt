@@ -4,6 +4,7 @@
 
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
 
 / {
 	compatible = "jdcloud,re-sp-01b", "mediatek,mt7621-soc";
@@ -35,21 +36,28 @@
 		compatible = "gpio-leds";
 
 		led_red: red {
-			label = "red:sys";
+			function = LED_FUNCTION_STATUS;
+			color = <LED_COLOR_ID_RED>;
 			gpios = <&gpio 6 GPIO_ACTIVE_LOW>;
 			panic-indicator;
 		};
 
 		led_green: green {
-			label = "green:sys";
+			function = LED_FUNCTION_STATUS;
+			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
 		};
 
 		led_blue: blue {
-			label = "blue:sys";
+			function = LED_FUNCTION_STATUS;
+			color = <LED_COLOR_ID_BLUE>;
 			gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
 		};
 	};
+};
+
+&ethphy0 {
+	/delete-property/ interrupts;
 };
 
 &gmac0 {
@@ -64,12 +72,6 @@
 
 	nvmem-cells = <&macaddr_config_4429 0>;
 	nvmem-cell-names = "mac-address";
-};
-
-&mdio {
-	ethphy0: ethernet-phy@0 {
-		reg = <0>;
-	};
 };
 
 &sdhci {
@@ -114,7 +116,7 @@
 				};
 			};
 
-			factory: partition@40000 {
+			partition@40000 {
 				label = "factory";
 				reg = <0x40000 0x10000>;
 				read-only;

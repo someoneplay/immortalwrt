@@ -7,7 +7,7 @@ BOARDNAME:=Rockchip
 FEATURES:=ext4 audio usb usbgadget display gpio fpu pci pcie rootfs-part boot-part squashfs
 SUBTARGETS:=armv8
 
-KERNEL_PATCHVER:=6.1
+KERNEL_PATCHVER:=6.6
 
 define Target/Description
 	Build firmware image for Rockchip SoC devices.
@@ -16,7 +16,7 @@ endef
 include $(INCLUDE_DIR)/target.mk
 
 DEFAULT_PACKAGES += uboot-envtools partx-utils mkf2fs kmod-gpio-button-hotplug \
-		    automount fdisk
+		    fdisk automount cpufreq
 
 KERNELNAME:=Image dtbs
 
