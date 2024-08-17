@@ -58,17 +58,17 @@ bananapi,bpi-r4|\
 bananapi,bpi-r4-poe|\
 cmcc,rax3000m|\
 jdcloud,re-cp-03)
-	. /lib/upgrade/common.sh
-
-	bootdev="$(fitblk_get_bootdev)"
-	case "$bootdev" in
-	ubi*)
+	. /lib/upgrade/fit.sh
+	export_fitblk_bootdev
+	case "$CI_METHOD" in
+	ubi)
 		ubootenv_add_ubi_default
 		;;
-	mmc*)
-		ubootenv_add_mmc_default "${bootdev%%p[0-9]*}"
+	emmc)
+		bootdev=${EMMC_KERN_DEV%%p[0-9]*}
+		ubootenv_add_mmc_default "${bootdev#/dev/}"
 		;;
-	mtd*)
+	default)
 		ubootenv_add_nor_default
 		;;
 	esac
@@ -85,6 +85,9 @@ zbtlink,zbt-z8103ax)
 comfast,cf-e393ax)
 	ubootenv_add_uci_config "/dev/mtd1" "0x0" "0x20000" "0x80000"
 	;;
+dlink,aquila-pro-ai-m30-a1)
+	ubootenv_add_uci_config "/dev/mtd1" "0x0" "0x40000" "0x40000"
+	;;
 glinet,gl-mt2500|\
 glinet,gl-mt6000)
 	local envdev=$(find_mmc_part "u-boot-env")
@@ -92,9 +95,6 @@ glinet,gl-mt6000)
 	;;
 glinet,gl-mt3000)
 	ubootenv_add_uci_config "/dev/mtd1" "0x0" "0x80000" "0x20000"
-	;;
-dlink,aquila-pro-ai-m30-a1)
-	ubootenv_add_uci_config "/dev/mtd1" "0x0" "0x40000" "0x40000"
 	;;
 imou,lc-hx3001-ubootmod)
 	ubootenv_add_uci_config "/dev/mtd1" "0x0" "0x80000" "0x80000" "1"

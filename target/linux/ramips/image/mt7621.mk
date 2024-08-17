@@ -605,7 +605,7 @@ define Device/comfast_cf-e390ax
   $(Device/dsa-migration)
   $(Device/uimage-lzma-loader)
   IMAGE_SIZE := 15808k
-  DEVICE_VENDOR := ComFast
+  DEVICE_VENDOR := COMFAST
   DEVICE_MODEL := CF-E390AX
   DEVICE_PACKAGES := kmod-mt7915-firmware -uboot-envtools
   IMAGES += factory.bin
@@ -619,7 +619,7 @@ define Device/comfast_cf-ew72-v2
     $(Device/dsa-migration)
     $(Device/uimage-lzma-loader)
     IMAGE_SIZE := 15808k
-    DEVICE_VENDOR := ComFast
+    DEVICE_VENDOR := COMFAST
     DEVICE_MODEL := CF-EW72 V2
     DEVICE_PACKAGES := kmod-mt7603 kmod-mt7615e kmod-mt7663-firmware-ap \
         -uboot-envtools
@@ -1384,9 +1384,9 @@ define Device/iodata_wn-ax1167gr
   IMAGE_SIZE := 15552k
   DEVICE_VENDOR := I-O DATA
   DEVICE_MODEL := WN-AX1167GR
-  ARTIFACTS := initramfs-factory.bin
-  ARTIFACT/initramfs-factory.bin := append-image-stage initramfs-kernel.bin | \
-	check-size 7680k | senao-header -r 0x30a -p 0x1055 -t 4
+  # ARTIFACTS := initramfs-factory.bin
+  # ARTIFACT/initramfs-factory.bin := append-image-stage initramfs-kernel.bin | \
+  # 	check-size 7680k | senao-header -r 0x30a -p 0x1055 -t 4
   DEVICE_PACKAGES := kmod-mt7603 kmod-mt76x2 -uboot-envtools
 endef
 TARGET_DEVICES += iodata_wn-ax1167gr
@@ -1661,6 +1661,19 @@ define Device/keenetic_kn-3010
 	check-size | zyimage -d 0x803010 -v "KN-3010"
 endef
 TARGET_DEVICES += keenetic_kn-3010
+
+define Device/keenetic_kn-3510
+  $(Device/nand)
+  $(Device/uimage-lzma-loader)
+  IMAGE_SIZE := 121088k
+  DEVICE_VENDOR := Keenetic
+  DEVICE_MODEL := KN-3510
+  DEVICE_PACKAGES := kmod-mt7915-firmware -uboot-envtools
+  IMAGES += factory.bin
+  IMAGE/factory.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | \
+	check-size | zyimage -d 0x803510 -v "KN-3510"
+endef
+TARGET_DEVICES += keenetic_kn-3510
 
 define Device/lenovo_newifi-d1
   $(Device/dsa-migration)
@@ -2125,6 +2138,24 @@ define Device/netgear_wax202
 	append-ubi | check-size | netgear-encrypted-factory
 endef
 TARGET_DEVICES += netgear_wax202
+
+define Device/netgear_wax214v2
+  $(Device/nand)
+  DEVICE_VENDOR := NETGEAR
+  DEVICE_MODEL := WAX214v2
+  DEVICE_PACKAGES := kmod-mt7915-firmware
+  NETGEAR_ENC_MODEL := WAX214v2
+  NETGEAR_ENC_REGION := US
+  IMAGE_SIZE := 38912k
+  KERNEL_LOADADDR := 0x82000000
+  KERNEL := kernel-bin | relocate-kernel 0x80001000 | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb | \
+	append-squashfs4-fakeroot
+  IMAGES += factory.img
+  IMAGE/factory.img := append-kernel | pad-to $$(KERNEL_SIZE) | \
+	append-ubi | check-size | netgear-encrypted-factory
+endef
+TARGET_DEVICES += netgear_wax214v2
 
 define Device/netgear_wndr3700-v5
   $(Device/dsa-migration)
@@ -2669,7 +2700,7 @@ TARGET_DEVICES += ubnt_edgerouter-x-sfp
 define Device/ubnt_unifi-6-lite
   $(Device/dsa-migration)
   DEVICE_VENDOR := Ubiquiti
-  DEVICE_MODEL := UniFi 6 Lite
+  DEVICE_MODEL := UniFi U6 Lite
   DEVICE_DTS_CONFIG := config@1
   DEVICE_DTS_LOADADDR := 0x87000000
   DEVICE_PACKAGES += kmod-mt7603 kmod-mt7915-firmware -uboot-envtools
@@ -2879,6 +2910,17 @@ define Device/winstars_ws-wn583a6
   DEVICE_PACKAGES := kmod-mt7603 kmod-mt7615-firmware -uboot-envtools
 endef
 TARGET_DEVICES += winstars_ws-wn583a6
+
+define Device/wodesys_wd-r1802u
+  $(Device/dsa-migration)
+  $(Device/uimage-lzma-loader)
+  IMAGE_SIZE := 15808k
+  DEVICE_VENDOR := Wodesys
+  DEVICE_MODEL := WD-R1802U
+  DEVICE_PACKAGES := kmod-mt7915-firmware -uboot-envtools
+  SUPPORTED_DEVICES += mt7621-rfb-ax-nor
+endef
+TARGET_DEVICES += wodesys_wd-r1802u
 
 define Device/xiaomi_nand_separate
   $(Device/nand)

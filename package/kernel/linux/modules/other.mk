@@ -39,7 +39,7 @@ define KernelPackage/bluetooth
 	CONFIG_BT_RFCOMM \
 	CONFIG_BT_BNEP \
 	CONFIG_BT_HCIBTUSB \
-	CONFIG_BT_HCIBTUSB_BCM=n \
+	CONFIG_BT_HCIBTUSB_BCM=y \
 	CONFIG_BT_HCIBTUSB_MTK=y \
 	CONFIG_BT_HCIBTUSB_RTL=y \
 	CONFIG_BT_HCIUART \
@@ -598,6 +598,7 @@ define KernelPackage/mtdtests
 	$(LINUX_DIR)/drivers/mtd/tests/mtd_speedtest.ko \
 	$(LINUX_DIR)/drivers/mtd/tests/mtd_stresstest.ko \
 	$(LINUX_DIR)/drivers/mtd/tests/mtd_subpagetest.ko \
+	$(LINUX_DIR)/drivers/mtd/tests/mtd_test.ko@ge6.1 \
 	$(LINUX_DIR)/drivers/mtd/tests/mtd_torturetest.ko
 endef
 
